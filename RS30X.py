@@ -4,7 +4,8 @@
 """
 RS304MD.py
 
-Copyright (c) 2017 Shota Hirama
+Copyright (c) 2017 Shota Hirama <brast351-github@yahoo.co.jp>
+Copyright (c) 2017 Daisuke Sato <tiryoh@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +32,7 @@ import struct
 
 class RS304MD(object):
     def __init__(self):
-        PORT = "/dev/ttyUSB0"
+        PORT = "/dev/tty.usbserial-AH00102M"
         BAUDRATE = 115200
         BYTESIZE = serial.EIGHTBITS
         PARITY = serial.PARITY_NONE
@@ -81,3 +82,9 @@ class RS304MD(object):
         self.__requestStatus(servo_id)
         b = self.ser.read(26)[13:15]
         return struct.unpack("<h", b)[0]
+
+    def setServoId(self, servo_id, dest):
+        a = self.__bytecreateid(servo_id)
+        a.extend([0x00, 0x04, 0x01, 0x01, dest])
+        self.__write(self.__checksum(a))
+

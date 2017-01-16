@@ -10,6 +10,7 @@ requires the followings to run:
 ## Contributors 
 
 * Shota Hirama([@shotahirama](https://github.com/shotahirama))
+* Daisuke Sato([@Tiryoh](https://github.com/Tiryoh))
 
 ## References
 
