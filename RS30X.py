@@ -31,8 +31,8 @@ import struct
 
 
 class RS304MD(object):
-    def __init__(self):
-        PORT = "/dev/tty.usbserial-AH00102M"
+    def __init__(self, port):
+        PORT = port
         BAUDRATE = 115200
         BYTESIZE = serial.EIGHTBITS
         PARITY = serial.PARITY_NONE
