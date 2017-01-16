@@ -2,7 +2,7 @@
 # coding:utf-8
 
 """
-RS304MD.py
+RS30X.py
 
 Copyright (c) 2017 Shota Hirama <brast351-github@yahoo.co.jp>
 Copyright (c) 2017 Daisuke Sato <tiryoh@gmail.com>
