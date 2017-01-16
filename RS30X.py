@@ -87,4 +87,10 @@ class RS304MD(object):
         a = self.__bytecreateid(servo_id)
         a.extend([0x00, 0x04, 0x01, 0x01, dest])
         self.__write(self.__checksum(a))
+        self.flash
+
+    def flash(self, servo_id, dest):
+        a = self.__bytecreateid(servo_id)
+        a.extend([0x40, 0xFF, 0x00, 0x00])
+        self.__write(self.__checksum(a))
 
