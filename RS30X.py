@@ -61,6 +61,11 @@ class RS304MD(object):
         a.extend([0x09, 0x00, 0x00, 0x01])
         self.__write(self.__checksum(a))
 
+    def __flash(self, servo_id):
+        a = self.__bytecreateid(servo_id)
+        a.extend([0x40, 0xFF, 0x00, 0x00])
+        self.__write(self.__checksum(a))
+
     def setAngle(self, servo_id, set_angle):
         angle = max(-150.0, min(150.0, set_angle))
         angle = int(angle * 10)
@@ -73,24 +78,61 @@ class RS304MD(object):
         a.extend([0x00, 0x24, 0x01, 0x01, int(onoff)])
         self.__write(self.__checksum(a))
 
+    def setBreak(self, servo_id, onoff):
+        if onoff == 1 : self.setTorque(servo_id, 2)
+        else : self.setTorque(servo_id, onoff)
+
+    def setServoId(self, servo_id, dest):
+        a = self.__bytecreateid(servo_id)
+        a.extend([0x00, 0x04, 0x01, 0x01, dest])
+        self.__write(self.__checksum(a))
+        self.__flash(servo_id)
+
+    def setMaxTorque(self, servo_id, max_torque):
+        a = self.__bytecreateid(servo_id)
+        a.extend([0x00, 0x23, 0x01, 0x01, int(max_torque)])
+        self.__write(self.__checksum(a))
+        self.__flash(servo_id)
+
     def readAngle(self, servo_id):
         self.__requestStatus(servo_id)
         b = self.ser.read(26)[7:9]
         return struct.unpack("<h", b)[0] / 10.0
+
+    def readTime(self, servo_id):
+        self.__requestStatus(servo_id)
+        b = self.ser.read(26)[9:11]
+        return struct.unpack("<h", b)[0] * 10
+
+    def readSpeed(self, servo_id):
+        self.__requestStatus(servo_id)
+        b = self.ser.read(26)[11:13]
+        return struct.unpack("<h", b)[0]
 
     def readCurrent(self, servo_id):
         self.__requestStatus(servo_id)
         b = self.ser.read(26)[13:15]
         return struct.unpack("<h", b)[0]
 
-    def setServoId(self, servo_id, dest):
-        a = self.__bytecreateid(servo_id)
-        a.extend([0x00, 0x04, 0x01, 0x01, dest])
-        self.__write(self.__checksum(a))
-        self.flash
+    def readTemperature(self, servo_id):
+        self.__requestStatus(servo_id)
+        b = self.ser.read(26)[15:17]
+        return struct.unpack("<h", b)[0]
 
-    def flash(self, servo_id, dest):
+    def readVoltage(self, servo_id):
+        self.__requestStatus(servo_id)
+        b = self.ser.read(26)[17:19]
+        return struct.unpack("<h", b)[0] * 10
+
+    def readTorqueStatus(self, servo_id):
         a = self.__bytecreateid(servo_id)
-        a.extend([0x40, 0xFF, 0x00, 0x00])
+        a.extend([0x0F, 0x24, 0x01, 0x00])
+        self.__write(self.__checksum(a))
+        b = self.ser.read(9)[7]
+        return struct.unpack("<h", b)[0]
+
+    def reboot(self, servo_id):
+        a = self.__bytecreateid(servo_id)
+        a.extend([0x20, 0xFF, 0x00, 0x00])
         self.__write(self.__checksum(a))
 
