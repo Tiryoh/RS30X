@@ -31,7 +31,7 @@ import struct
 
 
 class RS304MD(object):
-    def __init__(self, port):
+    def __init__(self, port = "/dev/tty.usbserial-AH00102M"):
         PORT = port
         BAUDRATE = 115200
         BYTESIZE = serial.EIGHTBITS
@@ -126,9 +126,9 @@ class RS304MD(object):
 
     def readTorqueStatus(self, servo_id):
         a = self.__bytecreateid(servo_id)
-        a.extend([0x0F, 0x24, 0x01, 0x00])
+        a.extend([0x0F, 0x24, 0x02, 0x00])
         self.__write(self.__checksum(a))
-        b = self.ser.read(9)[7]
+        b = self.ser.read(9)[7:9]
         return struct.unpack("<h", b)[0]
 
     def reboot(self, servo_id):
