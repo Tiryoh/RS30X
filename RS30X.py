@@ -70,7 +70,15 @@ class RS304MD(object):
         angle = max(-150.0, min(150.0, set_angle))
         angle = int(angle * 10)
         a = self.__bytecreateid(servo_id)
-        a.extend([0x00, 0x1E, 0x02, 0x01, angle & 0xFF, (angle & 0xFF00) >> 8])
+        a.extend([0x00, 0x1E, 0x02, 0x01, (angle & 0xFF), (angle & 0xFF00) >> 8])
+        self.__write(self.__checksum(a))
+
+    def setAngleInTime(self, servo_id, set_angle, set_goal_time):
+        angle = max(-150.0, min(150.0, set_angle))
+        angle = int(angle * 10)
+        goal_time = int(set_goal_time * 100)
+        a = self.__bytecreateid(servo_id)
+        a.extend([0x00, 0x1E, 0x04, 0x01, angle & 0xFF, (angle & 0xFF00) >> 8, goal_time & 0xFF, (goal_time & 0xFF00) >> 8])
         self.__write(self.__checksum(a))
 
     def setTorque(self, servo_id, onoff):
